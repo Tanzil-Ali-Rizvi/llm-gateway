@@ -1,0 +1,42 @@
+# Example production config. Keys come from environment variables; nothing secret lives in this file.
+# Prices are USD per 1M tokens as published by each provider in October 2026; check their pricing pages.
+providers:
+  groq:
+    type: openai
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+    models:
+      openai/gpt-oss-120b: {input_per_1m: 0.15, output_per_1m: 0.60}
+      openai/gpt-oss-20b: {input_per_1m: 0.075, output_per_1m: 0.30}
+  gemini:
+    type: openai
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai
+    api_key_env: GEMINI_API_KEY
+    models:
+      gemini-2.5-flash: {input_per_1m: 0.30, output_per_1m: 2.50}
+  openrouter:
+    type: openai
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+    models:
+      meta-llama/llama-3.3-70b-instruct: {input_per_1m: 0.13, output_per_1m: 0.40}
+  ollama:
+    type: openai
+    base_url: http://localhost:11434/v1
+    models:
+      qwen2.5:7b: {input_per_1m: 0, output_per_1m: 0}
+
+routes:
+  smart: [groq/openai/gpt-oss-120b, gemini/gemini-2.5-flash, openrouter/meta-llama/llama-3.3-70b-instruct]
+  fast: [groq/openai/gpt-oss-20b, gemini/gemini-2.5-flash, ollama/qwen2.5:7b]
+  local: [ollama/qwen2.5:7b]
+default_route: fast
+
+cache:
+  enabled: true
+  ttl_s: 86400
+  semantic: false
+breaker: {failure_threshold: 5, cooldown_s: 30}
+retry: {attempts_per_target: 2, backoff_s: 0.25, max_retry_after_s: 5}
+database: gateway.db
+require_auth: true

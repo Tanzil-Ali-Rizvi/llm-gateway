@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests benchmarks dashboard
+      - run: ruff format --check src tests benchmarks dashboard
+      - run: pytest -q
+
+  openai-sdk-compat:
+    # Real HTTP server + the official OpenAI Python SDK, against mock providers.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e . openai
+      - run: python scripts/sdk_smoke_test.py
+
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build (and push on main)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
+      - name: Container smoke test
+        run: |
+          docker run -d --name gw -p 8080:8080 -e LLMGW_CONFIG=config/demo.yaml -e LLMGW_MASTER_KEY=ci-master ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
+          for i in $(seq 1 30); do curl -sf localhost:8080/health && break; sleep 1; done
+          curl -sf -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer ci-master" \
+            -H "content-type: application/json" -d '{"model":"smart","messages":[{"role":"user","content":"hi"}]}'
+          docker logs gw | tail -5
+      - name: Push
+        if: github.ref == 'refs/heads/main'
+        run: docker push ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

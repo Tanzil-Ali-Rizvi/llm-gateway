@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llm-gateway"
+version = "0.1.0"
+description = "OpenAI-compatible LLM gateway: multi-provider routing with fallback and circuit breakers, caching (exact + semantic), per-key budgets and rate limits, cost tracking and metrics."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Tanzil Ali Rizvi", email = "tanzilali.rizvi@gmail.com" }]
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.29",
+  "httpx>=0.27",
+  "pydantic>=2.6",
+  "pyyaml>=6",
+  "prometheus-client>=0.20",
+  "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+semantic = ["fastembed>=0.4"]
+dashboard = ["streamlit>=1.40", "pandas>=2"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6"]
+
+[project.scripts]
+llmgw = "llmgw.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llmgw"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"

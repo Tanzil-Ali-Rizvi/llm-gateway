@@ -1,0 +1,14 @@
+services:
+  gateway:
+    build: .
+    image: ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
+    ports: ["8080:8080"]
+    environment:
+      LLMGW_CONFIG: config/gateway.yaml
+      LLMGW_MASTER_KEY: ${LLMGW_MASTER_KEY:?set a master key}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+    volumes: ["gateway-data:/data"]
+volumes:
+  gateway-data:

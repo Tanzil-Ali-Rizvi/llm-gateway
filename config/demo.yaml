@@ -1,0 +1,17 @@
+# Self-contained config with simulated providers: runs anywhere without API keys (Docker smoke test, demos).
+providers:
+  primary:
+    type: mock
+    fault: {error_rate: 0.0, latency_ms: 150, latency_jitter_ms: 50}
+    models:
+      big: {input_per_1m: 0.15, output_per_1m: 0.60}
+  backup:
+    type: mock
+    fault: {latency_ms: 250, latency_jitter_ms: 80}
+    models:
+      small: {input_per_1m: 0.05, output_per_1m: 0.08}
+routes:
+  smart: [primary/big, backup/small]
+  fast: [backup/small]
+default_route: smart
+database: /tmp/llmgw-demo.db

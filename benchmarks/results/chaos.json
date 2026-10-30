@@ -1,0 +1,93 @@
+{
+  "setup": {
+    "primary_latency_ms": "300\u00b1100",
+    "backup_latency_ms": "450\u00b1150",
+    "concurrency": 25,
+    "requests_per_run": 1000
+  },
+  "flaky_primary_20pct_errors": {
+    "direct to primary (no gateway)": {
+      "requests": 1000,
+      "success_rate": 81.9,
+      "fallback_rate": 0.0,
+      "upstream_calls": 1000,
+      "p50_ms": 300.6,
+      "p95_ms": 392.2,
+      "p99_ms": 398.8
+    },
+    "gateway: retries only": {
+      "requests": 1000,
+      "success_rate": 96.2,
+      "fallback_rate": 0.0,
+      "upstream_calls": 1190,
+      "p50_ms": 320.3,
+      "p95_ms": 702.1,
+      "p99_ms": 790.9,
+      "cost_usd": 0.00974,
+      "wall_s": 15.1
+    },
+    "gateway: retries + fallback": {
+      "requests": 1000,
+      "success_rate": 100.0,
+      "fallback_rate": 4.3,
+      "upstream_calls": 1239,
+      "p50_ms": 327.5,
+      "p95_ms": 789.3,
+      "p99_ms": 1221.2,
+      "cost_usd": 0.011392,
+      "wall_s": 16.3
+    }
+  },
+  "primary_down_100pct": {
+    "fallback, no circuit breaker": {
+      "requests": 1000,
+      "success_rate": 100.0,
+      "fallback_rate": 100.0,
+      "upstream_calls": 3000,
+      "p50_ms": 1100.1,
+      "p95_ms": 1299.2,
+      "p99_ms": 1368.0,
+      "cost_usd": 0.039617,
+      "wall_s": 44.7
+    },
+    "fallback + circuit breaker": {
+      "requests": 1000,
+      "success_rate": 100.0,
+      "fallback_rate": 100.0,
+      "upstream_calls": 1029,
+      "p50_ms": 456.8,
+      "p95_ms": 593.2,
+      "p99_ms": 808.0,
+      "cost_usd": 0.039617,
+      "wall_s": 18.8
+    }
+  },
+  "faq_cache_2000_requests": {
+    "no cache": {
+      "requests": 2000,
+      "success_rate": 100.0,
+      "fallback_rate": 0.0,
+      "upstream_calls": 2000,
+      "p50_ms": 7.3,
+      "p95_ms": 8.5,
+      "p99_ms": 8.6,
+      "cost_usd": 0.032163,
+      "wall_s": 14.0,
+      "cache_hit_rate": 0.0,
+      "saved_usd": 0
+    },
+    "exact-match cache": {
+      "requests": 2000,
+      "success_rate": 100.0,
+      "fallback_rate": 0.0,
+      "upstream_calls": 251,
+      "p50_ms": 0.1,
+      "p95_ms": 7.5,
+      "p99_ms": 8.6,
+      "cost_usd": 0.004134,
+      "wall_s": 2.0,
+      "cache_hit_rate": 87.5,
+      "saved_usd": 0.028029
+    }
+  }
+}
