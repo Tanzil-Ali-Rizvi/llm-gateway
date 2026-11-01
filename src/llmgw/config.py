@@ -60,7 +60,7 @@ class CacheConfig(BaseModel):
     ttl_s: int = 24 * 3600
     only_deterministic: bool = True  # cache only temperature==0 requests unless the client forces it
     semantic: bool = False
-    semantic_threshold: float = 0.92
+    semantic_threshold: float = 0.96  # see benchmarks/results/semantic_threshold.md
     embedding_model: str = "BAAI/bge-small-en-v1.5"
 
 

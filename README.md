@@ -27,7 +27,7 @@
 
 ## Benchmarks
 
-Reproducible with simulated providers (no API keys): `python benchmarks/chaos.py`. Results also run in [CI](.github/workflows/benchmarks.yml) and are committed in [`benchmarks/results/`](benchmarks/results/).
+Reproducible with simulated providers (no API keys): `python benchmarks/chaos.py`. Results also run in [CI](.github/workflows/benchmarks.yml) and are committed in [`benchmarks/results/`](benchmarks/results/). Failures are seeded, but which request hits them depends on concurrent scheduling, so success rates move by about ±0.2 points between runs (the CI run gave 81.8% / 96.4% / 100%).
 
 **Flaky primary provider (20% of calls fail with HTTP 503), 1,000 requests, 25 concurrent clients**
 
@@ -55,7 +55,17 @@ Without a breaker, every request first wastes two calls on the dead provider. Wi
 
 Savings depend on how repetitive your traffic is; the request log reports the real figure as `saved_usd`.
 
-**Semantic cache: how often would it serve the wrong answer?** Measured on Quora Question Pairs with `bge-small-en-v1.5` in CI: see [`benchmarks/results/semantic_threshold.md`](benchmarks/results/semantic_threshold.md). This is why the semantic layer is off by default and only ever matches within the same route, system prompt, history and parameters.
+**Semantic cache: how often would it serve the wrong answer?** Measured in CI on 4,000 Quora Question Pairs (validation split) with `bge-small-en-v1.5`. A "wrong answer" is a pair of different questions whose similarity clears the threshold, so the cache would replay one question's answer for the other.
+
+| Threshold | Paraphrases served from cache | Different questions wrongly served | Precision of hits |
+|---|---|---|---|
+| 0.85 | 80.9% | 22.6% | 68.8% |
+| 0.90 | 58.6% | 10.8% | 76.9% |
+| 0.94 | 34.2% | 3.2% | 86.7% |
+| **0.96** | **21.9%** | **1.3%** | **91.0%** |
+| 0.98 | 12.4% | 0.3% | 95.9% |
+
+Thresholds around 0.85 that are common in tutorials would give a wrong answer to roughly 1 in 5 distinct questions on this data. The gateway therefore ships the semantic layer **off by default**, recommends 0.96 or higher when enabled, and only matches within the same route, system prompt, history and parameters. Full table and the closest non-duplicate pairs: [`semantic_threshold.md`](benchmarks/results/semantic_threshold.md).
 
 ## Quick start
 
