@@ -6,16 +6,16 @@ Simulated providers (primary 300±100 ms, backup 450±150 ms), 25 concurrent cli
 
 | Setup | Success | Served by fallback | Upstream calls | p50 ms | p95 ms |
 |---|---|---|---|---|---|
-| direct to primary (no gateway) | **81.9%** | 0.0% | 1000 | 300.6 | 392.2 |
-| gateway: retries only | **96.2%** | 0.0% | 1190 | 320.3 | 702.1 |
-| gateway: retries + fallback | **100.0%** | 4.3% | 1239 | 327.5 | 789.3 |
+| direct to primary (no gateway) | **81.8%** | 0.0% | 1000 | 300.9 | 391.8 |
+| gateway: retries only | **96.4%** | 0.0% | 1193 | 325.9 | 698.5 |
+| gateway: retries + fallback | **100.0%** | 4.2% | 1223 | 322.0 | 787.5 |
 
 ## Primary completely down
 
 | Setup | Success | Served by fallback | Upstream calls | p50 ms | p95 ms |
 |---|---|---|---|---|---|
-| fallback, no circuit breaker | **100.0%** | 100.0% | 3000 | 1100.1 | 1299.2 |
-| fallback + circuit breaker | **100.0%** | 100.0% | 1029 | 456.8 | 593.2 |
+| fallback, no circuit breaker | **100.0%** | 100.0% | 3000 | 1101.6 | 1293.4 |
+| fallback + circuit breaker | **100.0%** | 100.0% | 1029 | 456.3 | 592.5 |
 
 ## Support-bot FAQ workload: 2,000 requests over 300 distinct questions
 

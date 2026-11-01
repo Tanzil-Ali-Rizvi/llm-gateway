@@ -1,0 +1,84 @@
+{
+  "dataset": "GLUE QQP validation",
+  "pairs": 4000,
+  "duplicates": 1524,
+  "non_duplicates": 2476,
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "table": [
+    {
+      "threshold": 0.8,
+      "useful_hit_rate": 94.9,
+      "wrong_answer_rate": 36.15,
+      "precision": 61.8
+    },
+    {
+      "threshold": 0.85,
+      "useful_hit_rate": 80.9,
+      "wrong_answer_rate": 22.62,
+      "precision": 68.8
+    },
+    {
+      "threshold": 0.88,
+      "useful_hit_rate": 68.2,
+      "wrong_answer_rate": 14.66,
+      "precision": 74.1
+    },
+    {
+      "threshold": 0.9,
+      "useful_hit_rate": 58.6,
+      "wrong_answer_rate": 10.82,
+      "precision": 76.9
+    },
+    {
+      "threshold": 0.92,
+      "useful_hit_rate": 46.3,
+      "wrong_answer_rate": 6.58,
+      "precision": 81.2
+    },
+    {
+      "threshold": 0.94,
+      "useful_hit_rate": 34.2,
+      "wrong_answer_rate": 3.23,
+      "precision": 86.7
+    },
+    {
+      "threshold": 0.96,
+      "useful_hit_rate": 21.9,
+      "wrong_answer_rate": 1.33,
+      "precision": 91.0
+    },
+    {
+      "threshold": 0.98,
+      "useful_hit_rate": 12.4,
+      "wrong_answer_rate": 0.32,
+      "precision": 95.9
+    }
+  ],
+  "examples_of_wrong_hits": [
+    {
+      "q1": "What are some accessories that would be perfect with this latex maids outfit?",
+      "q2": "What accessories would be perfect with this latex maids outfit?",
+      "similarity": 0.997
+    },
+    {
+      "q1": "Which is the best institute for Hadoop and gives placements in Bangalore?",
+      "q2": "Which is the best Institute for Hadoop and which gives good placements in Bangalore?",
+      "similarity": 0.997
+    },
+    {
+      "q1": "Which is the best institute for coaching of mass communication in delhi ?",
+      "q2": "Which is the best coaching institute for mass communication in delhi?",
+      "similarity": 0.995
+    },
+    {
+      "q1": "How can I solve this AP computer science question?",
+      "q2": "How would you solve this AP Computer Science question?",
+      "similarity": 0.993
+    },
+    {
+      "q1": "How do i make videos like this ?",
+      "q2": "How can I make a video like this?",
+      "similarity": 0.985
+    }
+  ]
+}
