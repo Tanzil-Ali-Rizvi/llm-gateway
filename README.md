@@ -60,14 +60,15 @@ Savings depend on how repetitive your traffic is; the request log reports the re
 ## Quick start
 
 ```bash
-docker run -p 8080:8080 -e LLMGW_MASTER_KEY=change-me -e GROQ_API_KEY=... ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
-# or:  pip install -e . && LLMGW_MASTER_KEY=change-me llmgw serve --config config/gateway.yaml
+export LLMGW_MASTER_KEY=$(openssl rand -hex 16)
+docker run -p 8080:8080 -e LLMGW_MASTER_KEY -e GROQ_API_KEY=... ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
+# or:  pip install -e . && llmgw serve --config config/gateway.yaml
 ```
 
 Create a key for a team (shown once):
 
 ```bash
-curl -X POST localhost:8080/admin/keys -H "Authorization: Bearer change-me" \
+curl -X POST localhost:8080/admin/keys -H "Authorization: Bearer $LLMGW_MASTER_KEY" \
   -H "content-type: application/json" -d '{"name": "support-bot", "daily_budget_usd": 5, "rpm_limit": 60}'
 ```
 

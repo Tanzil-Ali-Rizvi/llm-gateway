@@ -53,10 +53,12 @@ jobs:
           load: true
           tags: ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
       - name: Container smoke test
+        env:
+          MASTER: ci-master
         run: |
-          docker run -d --name gw -p 8080:8080 -e LLMGW_CONFIG=config/demo.yaml -e LLMGW_MASTER_KEY=ci-master ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
+          docker run -d --name gw -p 8080:8080 -e LLMGW_CONFIG=config/demo.yaml -e LLMGW_MASTER_KEY="$MASTER" ghcr.io/tanzil-ali-rizvi/llm-gateway:latest
           for i in $(seq 1 30); do curl -sf localhost:8080/health && break; sleep 1; done
-          curl -sf -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer ci-master" \
+          curl -sf -X POST localhost:8080/v1/chat/completions -H "Authorization: Bearer $MASTER" \
             -H "content-type: application/json" -d '{"model":"smart","messages":[{"role":"user","content":"hi"}]}'
           docker logs gw | tail -5
       - name: Push
